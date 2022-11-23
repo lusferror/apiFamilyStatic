@@ -71,7 +71,7 @@ def get_member(id):
         else:
             return jsonify({"msg":"not found"}),404
     except Exception as e:
-        return jsonify({"Msg":e}),400
+        return jsonify({"Msg":"bad request"}),400
 
 # this only runs if `$ python src/app.py` is executed
 if __name__ == '__main__':
