@@ -29,10 +29,13 @@ def sitemap():
 def handle_hello():
 
     # this is how you can use the Family datastructure by calling its methods
-    members = jackson_family.get_all_members()
-    response_body = members
+    try:
+        members = jackson_family.get_all_members()
+        response_body = members
+        return jsonify(response_body), 200
+    except:
+        return jsonify({"msg":"Bad Request"}),404
 
-    return jsonify(response_body), 200
 
 @app.route('/member',methods=['POST'])
 def add_member():
@@ -40,26 +43,27 @@ def add_member():
         request_body = json.loads(request.data)
         jackson_family.add_member(request_body)
         return jsonify(request_body),200
-    except Exception as e:
-        return jsonify("Bad Request"),400
+    except:
+        return jsonify({"msg":"Bad Request"}),404
+
     
 @app.route('/member/<int:id>', methods=['DELETE'])
 def delete_member(id):
-        member=jackson_family.delete_member(int(id))
+    try:
+        jackson_family.delete_member(id)
         return jsonify({"done":True}),200
+    except:
+        return jsonify({"msg":"Bad Request"}),404
 
 
 @app.route('/member/<int:id>')
 def get_member(id):
     try:
         member=jackson_family.get_member(int(id))
-        if member!= None:
-            return jsonify(member),200
-        else:
-            return jsonify({"msg":"not found"}),404
+        return jsonify(member),200
     except Exception as e:
-        print(e)
-        return jsonify({"Msg":"bad request"}),400
+        return jsonify({"msg":"Bad Request"}),404
+
 
 # this only runs if `$ python src/app.py` is executed
 if __name__ == '__main__':
